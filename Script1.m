@@ -1,4 +1,7 @@
-function exit = Script1(path, sensitivity)
+% Sample run with parameters for gamma.
+% Script1('data/n01-pristine.jpg', 0.45, 0.8);
+
+function exit = Script1(path, sensitivity, gamma)
     % Clear screen and close previous executions.
     clc;
     close all;
@@ -17,16 +20,17 @@ function exit = Script1(path, sensitivity)
         gray = rgb2gray(I);
 
         % Contrast adjustment.
-        % % g = lib.log_transformation(gray, 0.16, true);
-        g = p.gamma_correction2(gray, 0.8, true);
-
+        % g = p.log_transformation(gray, 0.3, true);
+        g = p.gamma_correction(gray, gamma, true);
 
         % Binarization.
         g = p.binarize(g, sensitivity, true);
 
-
         % Smoothing.
         g = p.remove_noise(g, true);
+
+        % Sharpening. 
+        g = p.sharpening(g, true);
 
 
         % Return 0 for successful execution.

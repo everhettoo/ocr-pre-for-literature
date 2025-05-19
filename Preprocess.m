@@ -48,7 +48,7 @@ classdef Preprocess
             trace_result(obj, f, s, "log", display_figure);  
         end
 
-        function s = gamma_correction2(obj, f, gamma, display_figure)
+        function s = gamma_correction(obj, f, gamma, display_figure)
             s = imadjust(f,[],[],gamma);
 
             % Display result.
@@ -56,29 +56,67 @@ classdef Preprocess
         end
 
         function s = remove_noise(obj, f, display_figure)
-            s = medfilt2(f, [5,5], 'symmetric');
+            s = medfilt2(f, [3,3], 'symmetric');
 
-            % % Asymmetric filter (weigted in the middle).
-            % % filter = [1 4 1
-            % %           4 7 4
-            % %           1 4 1];
-            % 
+            % Display result.
+            trace_result(obj, f, s, "smooth", display_figure);          
+        end
+
+        function s = remove_noise2(obj, f, display_figure)            
+            % Asymmetric filter (weigted in the middle).
+            % filter = [1 4 1
+            %           4 7 4
+            %           1 4 1];
+
+             filter = [1 2 4 2 1
+                       2 3 6 3 2
+                       4 6 8 6 4
+                       2 3 6 3 2
+                       1 2 4 2 1];
+
+            % Constant
+            c = 15;
+
+            filter = filter / c;
+
+            % By default it is correlation filter.
+            s = imfilter(f, filter);
+
+            % Display result.
+            trace_result(obj, f, s, "smooth", display_figure);          
+        end
+
+        function s = remove_noise3(obj, f, display_figure)            
+            % Asymmetric filter (weigted in the middle).
+            % filter = [1 4 1
+            %           4 7 4
+            %           1 4 1];
+
             %  filter = [1 2 4 2 1
             %            2 3 6 3 2
             %            4 6 8 6 4
             %            2 3 6 3 2
             %            1 2 4 2 1];
             % 
-            % % Constant
-            % c = 15;
-            % 
-            % filter = filter / c;
-            % 
-            % % By default it is correlation filter.
-            % s = imfilter(f, filter);
+            % s = ordfilt2(f,5,filter);
+
+            s = wiener2(f,[5 5]);
 
             % Display result.
             trace_result(obj, f, s, "smooth", display_figure);          
+        end
+
+        function s = sharpening(obj, f, display_figure)
+            % without img substraction (simplified laplacian).
+            lap = [0 -1 0
+                   -1 5 -1
+                   0 -1 0];
+            
+            % Create laplacian filtered image then minus original with laplacian.
+            s = conv2(f,lap,'same');
+
+            % Display result.
+            trace_result(obj, f, s, "sharp", display_figure);          
         end
 
     end
