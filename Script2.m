@@ -1,4 +1,3 @@
-% Sample run with parameters for gamma.
 % This script peforms morphological operation
 % Sample run with parameters for gamma is 0.75.
 
