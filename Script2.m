@@ -1,47 +1,41 @@
-% Script work well with pristine.
-% path = 'data/Pristine-01.jpg';
-path = 'data/Tampered-01.jpg';
+% Sample run with parameters for gamma.
+% This script peforms morphological operation
+% Sample run with parameters for gamma is 0.75.
 
-sensitivity = 0.45;
-gamma = 0.9;
+function exit = Script2(path, gamma)
+    % Clear screen and close previous executions.
+    clc;
+    close all;
 
+    fprintf('[Info] Path: %s\n', path);
 
-% Clear screen and close previous executions.
-clc;
-close all;
+    if exist(path, 'file')
+        file_part = strsplit(path,'.');
 
-fprintf('[Info] Path: %s\n', path);
-fprintf('[Info] Sensitivity: %f\n', sensitivity);
+        % Initialize preprocessing class with filename (without ext) to 
+        % write output with process name surfix for each stage.
+        p = Preprocess(string(file_part(1)));
 
-if exist(path, 'file')
-    file_part = strsplit(path,'.');
+        I = imread(path);
+        gray = rgb2gray(I);
 
-    % Initialize preprocessing class with filename (without ext) to 
-    % write output with process name surfix for each stage.
-    p = Preprocess(string(file_part(1)));
+        % Contrast adjustment.
+        g = p.gamma_correction(gray, str2double(gamma), true);
+        
+        % Binarization.
+        g = p.binarize_otsu(g, true);
 
-    I = imread(path);
-    gray = rgb2gray(I);
+        % Smoothing.
+        g = p.remove_noise(g, true);
 
-    % Contrast adjustment.
-    % g = p.log_transformation(gray, sensitivity, true);
-    g = p.gamma_correction(gray, gamma, true);
+        % dilate. 
+        g = p.erode(g, 'cube', 3, true);
 
-    % Binarization.
-    g = p.binarize(g, sensitivity, true);
-
-    % Smoothing.
-    g = p.remove_noise(g, true);
-
-    % Sharpening. 
-    g = p.sharpening(g, true);
-
-
-    % Return 0 for successful execution.
-    exit = 0;
-else
-    % Returns error for failed execution.
-    fprintf('Warning: file [%s] does not exist!\n', path);
-    exit = 1
+        % Return 0 for successful execution.
+        exit = 0;
+    else
+        % Returns error for failed execution.
+        fprintf('Warning: file [%s] does not exist!\n', path);
+        exit = 1;
+    end
 end
-

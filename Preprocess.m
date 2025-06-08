@@ -35,6 +35,17 @@ classdef Preprocess
             trace_result(obj, f, g, "binarize", display_figure);        
         end
 
+        function g = binarize_otsu(obj, f, display_figure)
+            % A high sensitivity value leads to thresholding more pixels as 
+            % foreground, at the risk of including some background pixels.
+            [count, x ] = imhist(f,16);
+            T = otsuthresh(count);
+            g = imbinarize(f, T); 
+
+            % Display result.
+            trace_result(obj, f, g, "binarize", display_figure);        
+        end
+
 
         % C scaling factor for the output image.
         function s = log_transformation(obj, f, c, display_figure)
@@ -62,6 +73,13 @@ classdef Preprocess
             trace_result(obj, f, s, "smooth", display_figure);          
         end
 
+        function s = remove_noise5(obj, f, size, display_figure)
+            s = medfilt2(f, [3,3], 'symmetric');
+
+            % Display result.
+            trace_result(obj, f, s, "smooth", display_figure);          
+        end
+
         function s = remove_noise2(obj, f, display_figure)            
             % Asymmetric filter (weigted in the middle).
             % filter = [1 4 1
@@ -69,9 +87,9 @@ classdef Preprocess
             %           1 4 1];
 
              filter = [1 2 4 2 1
-                       2 3 6 3 2
-                       4 6 8 6 4
-                       2 3 6 3 2
+                       2 3 8 3 2
+                       4 8 10 8 4
+                       2 3 8 3 2
                        1 2 4 2 1];
 
             % Constant
@@ -117,6 +135,55 @@ classdef Preprocess
 
             % Display result.
             trace_result(obj, f, s, "sharp", display_figure);          
+        end
+
+        % Placeholder - Smoothing filters
+
+        function s = remove_adaptive_noise(obj, f, filter_size, display_figure)            
+            s = wiener2(f,filter_size);
+
+            % Display result.
+            trace_result(obj, f, s, "adaptive", display_figure);          
+        end
+
+        function s = remove_median_noise(obj, f, filter_size, display_figure)
+            s = medfilt2(f, filter_size, 'symmetric');
+
+            % Display result.
+            trace_result(obj, f, s, "median", display_figure);          
+        end
+
+
+        function s = dilate(obj, f, shape, r, display_figure)
+            se = strel(shape, r);
+            s = imdilate(f, se);
+
+            % Display result.
+            trace_result(obj, f, s, "dilate", display_figure);   
+        end
+
+        function s = erode(obj, f, shape, r, display_figure)
+            se = strel(shape, r);
+            s = imerode(f, se);
+
+            % Display result.
+            trace_result(obj, f, s, "erode", display_figure);   
+        end
+
+        function s = open(obj, f, shape, r, display_figure)
+            se = strel(shape, r);
+            s = imopen(f, se);
+
+            % Display result.
+            trace_result(obj, f, s, "open", display_figure);   
+        end
+
+        function s = close(obj, f, shape, r, display_figure)
+            se = strel(shape, r);
+            s = imclose(f, se);
+
+            % Display result.
+            trace_result(obj, f, s, "close", display_figure);   
         end
 
     end
