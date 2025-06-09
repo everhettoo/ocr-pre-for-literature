@@ -1,4 +1,4 @@
-% This script perform binarization with Otsu.
+% This script peforms morphological operation with Otsu binarization.
 % Sample run with parameters for gamma is 0.75.
 
 function exit = Script2(path, gamma)
@@ -27,8 +27,17 @@ function exit = Script2(path, gamma)
         % Smoothing.
         g = p.remove_noise(g, true);
 
-        % Sharpening. 
-        g = p.sharpening(g, true);
+        % Please take note. In matlab when a background image is dark,
+        % erosion is demonstrated well. Otherwise, when the backgroound is
+        % brighter, the effect appear as dilation. Is the SE using zeros
+        % complement for this process, need to find out.
+        % g = imcomplement(g);
+
+        % Matlab is doing the opposite of erosion (i.e. dilation).
+        g = p.erode(g, 'cube', 3, true);
+
+        % Matlab is doing the opposite of dilation (i.e. erosion).
+        g = p.dilate(g, 'cube', 2, true);
 
         % Return 0 for successful execution.
         exit = 0;

@@ -1,7 +1,7 @@
-% This script perform binarization with Otsu.
+% This script perform binarization with adaptive thresholding.
 % Sample run with parameters for gamma is 0.75.
 
-function exit = Script2(path, gamma)
+function exit = Script1(path, gamma)
     % Clear screen and close previous executions.
     clc;
     close all;
@@ -22,7 +22,7 @@ function exit = Script2(path, gamma)
         g = p.gamma_correction(gray, str2double(gamma), true);
         
         % Binarization.
-        g = p.binarize_otsu(g, true);
+        g = p.binarize(g, 0.45, true);
 
         % Smoothing.
         g = p.remove_noise(g, true);

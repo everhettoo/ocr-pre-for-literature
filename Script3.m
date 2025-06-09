@@ -1,7 +1,7 @@
 % This script peforms morphological operation with Otsu binarization.
 % Sample run with parameters for gamma is 0.75.
 
-function exit = Script2(path, gamma)
+function exit = Script3(path, gamma)
     % Clear screen and close previous executions.
     clc;
     close all;

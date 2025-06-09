@@ -1,7 +1,7 @@
 % This script perform binarization with Otsu.
 % Sample run with parameters for gamma is 0.75.
 
-function exit = Script2(path, gamma)
+function exit = Script1(path, gamma)
     % Clear screen and close previous executions.
     clc;
     close all;

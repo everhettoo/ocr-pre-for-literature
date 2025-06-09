@@ -73,19 +73,6 @@ classdef Preprocess
             trace_result(obj, f, s, "smooth", display_figure);          
         end
 
-        function s = sharpening(obj, f, display_figure)
-            % without img substraction (simplified laplacian).
-            lap = [0 -1 0
-                   -1 5 -1
-                   0 -1 0];
-            
-            % Create laplacian filtered image then minus original with laplacian.
-            s = conv2(f,lap,'same');
-
-            % Display result.
-            trace_result(obj, f, s, "sharp", display_figure);          
-        end
-
         function s = remove_noise5(obj, f, size, display_figure)
             s = medfilt2(f, [3,3], 'symmetric');
 
@@ -135,6 +122,19 @@ classdef Preprocess
 
             % Display result.
             trace_result(obj, f, s, "smooth", display_figure);          
+        end
+
+        function s = sharpening(obj, f, display_figure)
+            % without img substraction (simplified laplacian).
+            lap = [0 -1 0
+                   -1 5 -1
+                   0 -1 0];
+            
+            % Create laplacian filtered image then minus original with laplacian.
+            s = conv2(f,lap,'same');
+
+            % Display result.
+            trace_result(obj, f, s, "sharp", display_figure);          
         end
 
         % Placeholder - Smoothing filters
