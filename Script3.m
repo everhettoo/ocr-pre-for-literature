@@ -1,7 +1,7 @@
-% This script perform binarization with adaptive thresholding.
+% This script peforms morphological operation with Otsu binarization.
 % Sample run with parameters for gamma is 0.75.
 
-function exit = Script1(path, gamma)
+function exit = Script2(path, gamma)
     % Clear screen and close previous executions.
     clc;
     close all;
@@ -22,13 +22,22 @@ function exit = Script1(path, gamma)
         g = p.gamma_correction(gray, str2double(gamma), true);
         
         % Binarization.
-        g = p.binarize(g, 0.45, true);
+        g = p.binarize_otsu(g, true);
 
         % Smoothing.
         g = p.remove_noise(g, true);
 
-        % Sharpening. 
-        g = p.sharpening(g, true);
+        % Please take note. In matlab when a background image is dark,
+        % erosion is demonstrated well. Otherwise, when the backgroound is
+        % brighter, the effect appear as dilation. Is the SE using zeros
+        % complement for this process, need to find out.
+        % g = imcomplement(g);
+
+        % Matlab is doing the opposite of erosion (i.e. dilation).
+        g = p.erode(g, 'cube', 3, true);
+
+        % Matlab is doing the opposite of dilation (i.e. erosion).
+        g = p.dilate(g, 'cube', 2, true);
 
         % Return 0 for successful execution.
         exit = 0;
